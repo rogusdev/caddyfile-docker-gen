@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  caddyfile-docker-gen:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./Caddyfile:/etc/caddy/Caddyfile"
+    environment:
+      CADDY_IMAGE: "caddy"
+      LABEL_PREFIX: "caddy"
+      CADDYFILE_PATH: "/etc/caddy/Caddyfile"

@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  # https://hub.docker.com/r/jwilder/whoami/
+  #  thanks to the creator of nginx-proxy, that inspired this
+  whoami1:
+    image: jwilder/whoami
+    labels:
+      caddy: "whoami1.example.com"
+      caddy.reverse_proxy: "$$CONTAINER_IP:8000"
+  whoami2:
+    image: jwilder/whoami
+    labels:
+      caddy: "whoami2.example.com"
+      caddy.reverse_proxy: "$$CONTAINER_IP:8000"
+      caddy.reverse_proxy.subdirective: "pass"
+  # https://github.com/mendhak/docker-http-https-echo
+  http-echo:
+    image: mendhak/http-https-echo
+    labels:
+      caddy: "http-echo.example.com"
+      caddy.reverse_proxy: "$$CONTAINER_IP:80"

@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+
+  caddy:
+    image: "caddy:2.0.0-alpine"
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./Caddyfile:/etc/caddy/Caddyfile:ro"
+      - "./caddy_data:/data"
+
+  caddyfile-docker-gen:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./Caddyfile:/etc/caddy/Caddyfile"
+    environment:
+      CADDY_IMAGE: "caddy"
+      LABEL_PREFIX: "caddy"
+      CADDYFILE_PATH: "/etc/caddy/Caddyfile"
