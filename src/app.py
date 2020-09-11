@@ -1,5 +1,8 @@
+
 import os
 import docker
+
+from datetime import datetime
 
 
 class GenerationConfig:
@@ -115,6 +118,9 @@ class CaddyfileFactory:
         # FIXME: how to combine directives together, by each layer?
         # TODO: allow for explicitly isolating repeated directives with *X for integer X, possibly with leading zeroes
         container_config.directive_nodes[1][2] = container_config.directive_nodes[1][2].replace("$CONTAINER_IP", container_config.ip)
+        # for directive_node in container_config.directive_nodes:
+        #     container_config.directive_nodes[directive_node][-1] =
+        #         container_config.directive_nodes[directive_node][-1].replace("$CONTAINER_IP", container_config.ip)
         return f"\n{container_config.directive_nodes[0][1]} {{\n    {container_config.directive_nodes[1][1]} {container_config.directive_nodes[1][2]}\n}}\n"
 
 
@@ -126,7 +132,7 @@ class CaddyfileDockerGenerator:
         self.caddyfile_factory = caddyfile_factory
 
     def update_caddyfile(self):
-        print(f"Updating Caddyfile")
+        print(f"Updating Caddyfile @ {datetime.now()}")
         caddy_container, container_configs = self.container_config_factory.get_container_configs()
         # TODO: check if any diff exists to justify writing updated file
         caddyfile_text = self.caddyfile_factory.generate_caddyfile(container_configs)
@@ -149,6 +155,7 @@ class CaddyfileDockerGenerator:
 
 
 if __name__ == '__main__':
+    print(f"Start @ {datetime.now()}")
     docker_client = docker.from_env()
     generation_config = GenerationConfigFromEnvVars.from_env()
     container_config_factory = DockerContainerConfigsFactory(docker_client, generation_config)
@@ -167,4 +174,4 @@ if __name__ == '__main__':
     # https://docker-py.readthedocs.io/en/stable/client.html#docker.client.DockerClient.events
     # for event in docker_client.events():
     #     generator.update_caddyfile()
-    print('caddyfile-docker-gen interrupted! Terminated')
+    print(f"caddyfile-docker-gen interrupted! Terminated @ {datetime.now()}")
