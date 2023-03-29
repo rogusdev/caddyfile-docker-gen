@@ -130,14 +130,17 @@ class CaddyfileDockerGenerator:
         self.generation_config = generation_config
         self.container_config_factory = container_config_factory
         self.caddyfile_factory = caddyfile_factory
+        self._old_caddyfile_text = ""
 
     def update_caddyfile(self):
-        print(f"Updating Caddyfile @ {datetime.now()}")
+        print(f"Reviewing Caddyfile changes @ {datetime.now()}")
         caddy_container, container_configs = self.container_config_factory.get_container_configs()
-        # TODO: check if any diff exists to justify writing updated file
         caddyfile_text = self.caddyfile_factory.generate_caddyfile(container_configs)
-        self._write_caddyfile(caddyfile_text)
-        self._reload_caddy(caddy_container)
+        if self._old_caddyfile_text != caddyfile_text:
+            print(f"Updating Caddyfile @ {datetime.now()}")
+            self._write_caddyfile(caddyfile_text)
+            self._reload_caddy(caddy_container)
+            self._old_caddyfile_text = caddyfile_text
 
     def _write_caddyfile(self, caddyfile_text):
         f = open(self.generation_config.caddyfile_path, "w")
@@ -172,6 +175,6 @@ if __name__ == '__main__':
     #  between the snapshot to first event update and we would miss it
     #  ... meh, for now.
     # https://docker-py.readthedocs.io/en/stable/client.html#docker.client.DockerClient.events
-    # for event in docker_client.events():
-    #     generator.update_caddyfile()
+    for event in docker_client.events():
+        generator.update_caddyfile()
     print(f"caddyfile-docker-gen interrupted! Terminated @ {datetime.now()}")

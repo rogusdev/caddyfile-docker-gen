@@ -9,3 +9,6 @@ services:
     volumes:
       - "./Caddyfile:/etc/caddy/Caddyfile:ro"
       - "./caddy_data:/data"
+networks:
+  www:
+    external: true

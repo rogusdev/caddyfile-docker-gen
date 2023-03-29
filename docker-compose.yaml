@@ -2,8 +2,10 @@ version: '3.7'
 services:
 
   caddy:
-    image: "caddy:2.1.1-alpine"
+    image: "caddy:2.3.0-alpine"
     restart: always
+    networks:
+      - www
     ports:
       - "80:80"
       - "443:443"
@@ -15,6 +17,8 @@ services:
     build:
       context: .
     restart: always
+    networks:
+      - www
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./Caddyfile:/etc/caddy/Caddyfile"
@@ -22,3 +26,7 @@ services:
       CADDY_IMAGE: "caddy"
       LABEL_PREFIX: "caddy"
       CADDYFILE_PATH: "/etc/caddy/Caddyfile"
+
+networks:
+  www:
+    external: true

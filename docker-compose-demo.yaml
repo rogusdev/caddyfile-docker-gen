@@ -4,11 +4,15 @@ services:
   #  thanks to the creator of nginx-proxy, that inspired this
   whoami1:
     image: jwilder/whoami
+    networks:
+      - www
     labels:
       caddy: "whoami1.example.com"
       caddy.reverse_proxy: "$$CONTAINER_IP:8000"
   whoami2:
     image: jwilder/whoami
+    networks:
+      - www
     labels:
       caddy: "whoami2.example.com"
       caddy.reverse_proxy: "$$CONTAINER_IP:8000"
@@ -16,6 +20,11 @@ services:
   # https://github.com/mendhak/docker-http-https-echo
   http-echo:
     image: mendhak/http-https-echo
+    networks:
+      - www
     labels:
       caddy: "http-echo.example.com"
       caddy.reverse_proxy: "$$CONTAINER_IP:80"
+networks:
+  www:
+    external: true

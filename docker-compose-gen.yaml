@@ -11,3 +11,6 @@ services:
       CADDY_IMAGE: "caddy"
       LABEL_PREFIX: "caddy"
       CADDYFILE_PATH: "/etc/caddy/Caddyfile"
+networks:
+  www:
+    external: true
